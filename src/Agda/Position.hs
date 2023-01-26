@@ -1,3 +1,4 @@
+{-# LANGUAGE PatternSynonyms #-}
 module Agda.Position
   ( ToOffset(..)
   , makeToOffset
@@ -38,13 +39,22 @@ toAgdaRange table path (LSP.Range start end) = Range
   interval = Interval (toAgdaPositionWithoutFile table start)
                       (toAgdaPositionWithoutFile table end)
 
+-- | LSP Position to pair of Ints -- make me a pattern synonym please
+fromPosition :: LSP.Position -> (Int, Int)
+fromPosition (LSP.Position l c)  = (fromIntegral l, fromIntegral c)
+toPosition :: (Int, Int) -> LSP.Position
+toPosition (l, c) = LSP.Position (fromIntegral l) (fromIntegral c)
+
+
 -- | LSP Position -> Agda PositionWithoutFile
 toAgdaPositionWithoutFile :: ToOffset -> LSP.Position -> PositionWithoutFile
-toAgdaPositionWithoutFile table (LSP.Position line col) = Pn
-  ()
-  (fromIntegral (toOffset table (line, col)) + 1)
-  (fromIntegral line + 1)
-  (fromIntegral col + 1)
+toAgdaPositionWithoutFile table pos
+  = let (line, col) = fromPosition pos
+  in Pn
+     ()
+     (fromIntegral (toOffset table (line, col)) + 1)
+     (fromIntegral line + 1)
+     (fromIntegral col + 1)
 
 prettyPositionWithoutFile :: PositionWithoutFile -> String
 prettyPositionWithoutFile pos@(Pn () offset _line _col) =

@@ -278,7 +278,7 @@ fromDisplayInfo = \case
 
 lispifyGoalSpecificDisplayInfo :: InteractionId -> GoalDisplayInfo -> TCM IR.DisplayInfo
 lispifyGoalSpecificDisplayInfo ii kind = localTCState $
-  B.withInteractionId ii $
+  withInteractionId ii $
     case kind of
       Goal_HelperFunction helperType -> do
         doc <- inTopContext $ prettyATop helperType

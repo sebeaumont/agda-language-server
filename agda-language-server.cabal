@@ -63,15 +63,17 @@ library
       OverloadedStrings
   ghc-options: -Wincomplete-patterns -Wunused-do-bind -Wunused-foralls -Wwarnings-deprecations -Wwrong-do-bind -Wmissing-fields -Wmissing-methods -Wmissing-pattern-synonym-signatures -Wmissing-signatures -Werror=incomplete-patterns -fno-warn-orphans
   build-depends:
-      Agda ==2.6.2.1
+      Agda ==2.6.2.2
     , aeson
     , base >=4.7 && <5
     , bytestring
     , containers
+    , co-log-core
     , lsp <2
     , mtl
     , network
     , network-simple
+    , prettyprinter
     , process
     , stm
     , strict
@@ -86,7 +88,7 @@ executable als
       app
   ghc-options: -Wincomplete-patterns -Wunused-do-bind -Wunused-foralls -Wwarnings-deprecations -Wwrong-do-bind -Wmissing-fields -Wmissing-methods -Wmissing-pattern-synonym-signatures -Wmissing-signatures -threaded -rtsopts -with-rtsopts=-N -Werror=incomplete-patterns -fno-warn-orphans
   build-depends:
-      Agda ==2.6.2.1
+      Agda ==2.6.2.2
     , aeson
     , agda-language-server
     , base >=4.7 && <5
@@ -141,15 +143,17 @@ test-suite als-test
       OverloadedStrings
   ghc-options: -Wincomplete-patterns -Wunused-do-bind -Wunused-foralls -Wwarnings-deprecations -Wwrong-do-bind -Wmissing-fields -Wmissing-methods -Wmissing-pattern-synonym-signatures -Wmissing-signatures -threaded -rtsopts -with-rtsopts=-N -Werror=incomplete-patterns -fno-warn-orphans
   build-depends:
-      Agda ==2.6.2.1
+      Agda ==2.6.2.2
     , aeson
     , base >=4.7 && <5
     , bytestring
     , containers
+    , co-log-core
     , lsp <2
     , mtl
     , network
     , network-simple
+    , prettyprinter
     , process
     , stm
     , strict

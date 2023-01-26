@@ -1,13 +1,16 @@
 cradle:
-  stack:
-    - path: "./src"
-      component: "agda-language-server:lib"
+  cabal:
+    - path: "src"
+      component: "lib:agda-language-server"
 
-    - path: "./app/Main.hs"
+    - path: "app/Main.hs"
       component: "agda-language-server:exe:als"
 
-    - path: "./app/Paths_agda_language_server.hs"
+    - path: "app/Paths_agda_language_server.hs"
       component: "agda-language-server:exe:als"
 
-    - path: "./test"
+    - path: "test"
+      component: "agda-language-server:test:als-test"
+
+    - path: "src"
       component: "agda-language-server:test:als-test"

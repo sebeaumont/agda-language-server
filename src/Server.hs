@@ -15,8 +15,10 @@ import           Data.Aeson                     ( FromJSON
                                                 , ToJSON
                                                 )
 import qualified Data.Aeson                    as JSON
-import           Data.Text                      ( pack )
+import           Data.Text                      ( Text, pack )
+import           Prettyprinter                  ( pretty )
 import           GHC.IO.IOMode                  ( IOMode(ReadWriteMode) )
+import           Language.LSP.Logging           ( defaultClientLogger )
 import           Language.LSP.Server     hiding ( Options )
 import           Language.LSP.Types      hiding ( Options(..)
                                                 , TextDocumentSyncClientCapabilities(..)
@@ -32,6 +34,9 @@ import qualified Server.Handler                as Handler
 import qualified Language.LSP.Server           as LSP
 import           Options
 
+import           Colog.Core                    (LogAction(..), WithSeverity(..), Severity(..), (<&))
+import qualified Colog.Core                    as L
+
 
 --------------------------------------------------------------------------------
 
@@ -44,7 +49,10 @@ run options = do
         $ \(sock, _remoteAddr) -> do
             -- writeChan (envLogChan env) "[Server] connection established"
             handle <- socketToHandle sock ReadWriteMode
-            _      <- runServerWithHandles handle handle (serverDefn options)
+            -- TODO: FIXUP THE LOGGERS 
+            _      <- runServerWithHandles
+                      (L.cmap (fmap logToText) stderrLogger) (L.cmap (fmap logToText) dualLogger)
+                      handle handle (serverDefn options)
             return ()
       -- Switchboard.destroy switchboard
       return 0
@@ -86,6 +94,17 @@ run options = do
   -- includes the document content on save, so that we don't have to read it from the disk
   saveOptions :: SaveOptions
   saveOptions = SaveOptions (Just True)
+
+  -- log printer 
+  logToText = pack . show . pretty
+  -- loggers
+  stderrLogger :: LogAction IO (WithSeverity Text)
+  stderrLogger = L.cmap show L.logStringStderr
+  clientLogger :: LogAction (LspM Config) (WithSeverity Text)
+  clientLogger = defaultClientLogger
+  dualLogger :: LogAction (LspM Config) (WithSeverity Text)
+  dualLogger = clientLogger <> L.hoistLogAction liftIO stderrLogger
+
 
 -- handlers of the LSP server
 handlers :: Handlers (ServerM (LspM Config))
