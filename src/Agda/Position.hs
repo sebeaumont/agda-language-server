@@ -38,13 +38,15 @@ toAgdaRange table path (LSP.Range start end) = Range
   interval :: IntervalWithoutFile
   interval = Interval (toAgdaPositionWithoutFile table start)
                       (toAgdaPositionWithoutFile table end)
-
--- | LSP Position to pair of Ints -- make me a pattern synonym please
+  
+-- | LSP Position to pair of Ints
 fromPosition :: LSP.Position -> (Int, Int)
-fromPosition (LSP.Position l c)  = (fromIntegral l, fromIntegral c)
+fromPosition (LSP.Position l c) = (fromIntegral l, fromIntegral c)
+{-# INLINABLE fromPosition #-}
+
 toPosition :: (Int, Int) -> LSP.Position
 toPosition (l, c) = LSP.Position (fromIntegral l) (fromIntegral c)
-
+{-# INLINABLE toPosition #-}
 
 -- | LSP Position -> Agda PositionWithoutFile
 toAgdaPositionWithoutFile :: ToOffset -> LSP.Position -> PositionWithoutFile

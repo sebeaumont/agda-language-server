@@ -1,6 +1,5 @@
-{-# LANGUAGE DeriveGeneric #-}
 
--- entry point of the LSP server
+-- | Entry point of the LSP server
 
 module Server
   ( run
@@ -49,7 +48,7 @@ run options = do
         $ \(sock, _remoteAddr) -> do
             -- writeChan (envLogChan env) "[Server] connection established"
             handle <- socketToHandle sock ReadWriteMode
-            -- TODO: FIXUP THE LOGGERS 
+            -- WIP: Loggers 
             _      <- runServerWithHandles
                       (L.cmap (fmap logToText) stderrLogger) (L.cmap (fmap logToText) dualLogger)
                       handle handle (serverDefn options)
