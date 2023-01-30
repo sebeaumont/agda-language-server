@@ -20,4 +20,5 @@ node_modules/
 *.eventlog
 cabal.sandbox.config
 cabal.project.local
+cabal.project.freeze
 *~
