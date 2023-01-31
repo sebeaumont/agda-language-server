@@ -1,4 +1,5 @@
-{-# LANGUAGE PatternSynonyms #-}
+{-# LANGUAGE ViewPatterns #-}
+
 module Agda.Position
   ( ToOffset(..)
   , makeToOffset
@@ -38,25 +39,28 @@ toAgdaRange table path (LSP.Range start end) = Range
   interval :: IntervalWithoutFile
   interval = Interval (toAgdaPositionWithoutFile table start)
                       (toAgdaPositionWithoutFile table end)
-  
--- | LSP Position to pair of Ints
-fromPosition :: LSP.Position -> (Int, Int)
-fromPosition (LSP.Position l c) = (fromIntegral l, fromIntegral c)
-{-# INLINABLE fromPosition #-}
 
-toPosition :: (Int, Int) -> LSP.Position
-toPosition (l, c) = LSP.Position (fromIntegral l) (fromIntegral c)
-{-# INLINABLE toPosition #-}
+
+-- | Internal file offset type
+type FilePosition = (Int, Int)
+
+-- | LSP Position to internal file position takes care of integral conversions
+fromLSP :: LSP.Position -> FilePosition
+fromLSP (LSP.Position l c) = (fromIntegral l, fromIntegral c)
+{-# INLINE fromLSP #-}
+
+toLSP :: FilePosition-> LSP.Position
+toLSP (l, c) = LSP.Position (fromIntegral l) (fromIntegral c)
+{-# INLINE toLSP #-}
 
 -- | LSP Position -> Agda PositionWithoutFile
 toAgdaPositionWithoutFile :: ToOffset -> LSP.Position -> PositionWithoutFile
-toAgdaPositionWithoutFile table pos
-  = let (line, col) = fromPosition pos
-  in Pn
-     ()
-     (fromIntegral (toOffset table (line, col)) + 1)
-     (fromIntegral line + 1)
-     (fromIntegral col + 1)
+toAgdaPositionWithoutFile table (fromLSP -> (line, col)) =
+  Pn
+  ()
+  (fromIntegral (toOffset table (line, col)) + 1)
+  (fromIntegral line + 1)
+  (fromIntegral col + 1)
 
 prettyPositionWithoutFile :: PositionWithoutFile -> String
 prettyPositionWithoutFile pos@(Pn () offset _line _col) =
