@@ -55,10 +55,10 @@ toLSP (l, c) = LSP.Position (fromIntegral l) (fromIntegral c)
 
 -- | LSP Position -> Agda PositionWithoutFile
 toAgdaPositionWithoutFile :: ToOffset -> LSP.Position -> PositionWithoutFile
-toAgdaPositionWithoutFile table (fromLSP -> (line, col)) =
+toAgdaPositionWithoutFile table (fromLSP -> pos@(line, col)) =
   Pn
   ()
-  (fromIntegral (toOffset table (line, col)) + 1)
+  (fromIntegral (toOffset table pos) + 1)
   (fromIntegral line + 1)
   (fromIntegral col + 1)
 
